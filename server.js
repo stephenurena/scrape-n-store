@@ -12,9 +12,9 @@ let Promise = require('bluebird');
 //const for application
 const app = express();
 const port = process.env.PORT || '3000';
-const db = require('./app/models');
 const config = require('./config');
 const handlebars = require('./config/handlebars');
+// let db = require('./app/models');
 
 
 //views
@@ -40,6 +40,7 @@ app.use('/', require('.app/routes/html'));
 // });
 
 //mongoose db connection
+//add all of this to models view
 mongoose.Promise = Promise;
 
 // Database configuration with mongoose
@@ -55,5 +56,6 @@ db.on("error", function(error) {
 db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
+//
 
 module.exports = app;
