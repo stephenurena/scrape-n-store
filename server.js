@@ -1,5 +1,6 @@
 //dependencies
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const cheerio = require('cheerio');
 const mongoose = require('mongoose');
@@ -21,6 +22,12 @@ const handlebars = require('./config/handlebars');
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'hbs');
 
+//body-parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+
 //public- static files (if any)
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
@@ -39,23 +46,5 @@ app.use('/', require('.app/routes/html'));
 // 	res.render('error', {err});
 // });
 
-//mongoose db connection
-//add all of this to models view
-mongoose.Promise = Promise;
-
-// Database configuration with mongoose
-mongoose.connect("mongodb://localhost/scrape-n-store");
-var db = mongoose.connection;
-
-// Show any mongoose errors
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
-});
-
-// Once logged in to the db through mongoose, log a success message
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
-});
-//
 
 module.exports = app;
