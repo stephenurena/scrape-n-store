@@ -1,0 +1,25 @@
+/*this is css*/
+#navigation{
+	background-color: #6495ed;
+}
+.navbar-default .navbar-brand{
+	color: #fff;
+}
+.navbar {
+	margin-bottom: 0;
+	padding: 10px;
+}
+.jumbotron {
+	margin-bottom: 0;
+}
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover{
+	color: #fff;
+	background-color: #5a86d5;
+}
+.navbar-default .navbar-nav>li>a {
+	color: #fff;
+}
+#scrapedHeader {
+	background-color: #739fee;
+	color: #fff;
+}
