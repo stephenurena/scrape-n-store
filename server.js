@@ -37,10 +37,8 @@ app.use(express.static("public"));
 
 //routes
 let routes = require('./routes/html');
-// app.use('/', routes);
-app.get('/', function(req, res) {
-	res.render("index");
-})
+app.use('/', routes);
+
 //additional routes may follow;
 
 //error verify useage, neccessary for this type of app?
