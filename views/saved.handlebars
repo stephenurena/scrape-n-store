@@ -1,34 +1,78 @@
-<div class="jumbotron">
-	<h2>Scrape-N-Store</h2>
+<div class="jumbotron text-center">
+	<h1 id="headline" class="display-3">Scrape-N-Store</h1>
 </div>
 
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-12 articleBody">
 		<div id="scrapedHeader" class="panel-heading header">
 			<h3 class="panel-title">Scraped Articles</h3>
 		</div>
 		<div class="panel-body border" id="scrapedArticles">
 			<!-- list of articles goes here -->
-		<div class="container">
+			<div class="container articleTable">
+			<table class="table">
+				
+				{{#if articles}}
+					{{#each articles}}
+					<thead>
+					<tr>
+						<th class="panel-title tdHeaders"><a href="{{this.link}}" target="_blank">{{this.headline}}</a></th>
+						<th class="panel-title tdHeaders"> </th>
+						<th class="panel-title tdHeaders"> </th>
+					</tr>
+					</thead>
 
-		<tbody class="table">
-		{{#if articles}}
-			{{#each articles}}
+					<tbody class="table">
+					<tr>
+						<td class="panel-body border">{{this.summary}}</td>
+						<td>
+							<!-- Trigger the modal with a button -->
+							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">Add Note</button>
+						</td>
+						<td>
+							<form action="/remove/{{this._id}}?_method=PUT" method="POST">
+								<button type="submit" class="btn btn-default">Remove</button>
+							</form>
+						</td>
+					</tr>
+								<!-- Modal -->
+					<div id="myModal" class="modal fade" role="dialog">
+					  <div class="modal-dialog">
 
-			<tr>
-				<td class="panel-title tdHeaders"><a href="{{this.link}}" target="_blank">{{this.headline}}</a></td>
-				<td class="panel-body border">{{this.summary}}</td>
-				<td>
-					<form action="/id/{{this._id}}?_method=PUT" method="POST"></form>
-					<button type="submit" class="btn btn-default"></button>
-				</td>
-			</tr>
-			{{/each}}
-			{{else}}
-			<td class="text-center panel-title tdHeaders">No articles here</td>
-			{{/if}}
-		</tbody>
-		</div>
+					    <!-- Modal content-->
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal">&times;</button>
+					        <h4 class="modal-title">Add a note</h4>
+					      </div>
+					      <div class="modal-body">
+							 <form action="/comment/{{this._id}}?_method=PUT" method="POST">
+								<textarea style="width: 100%" placeholder="Comment on this" name="comment" class="textArea">
+									
+								</textarea>
+								<br>
+								<br>
+								<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save Note</button>
+							</form>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					      </div>
+					    </div>
+					
+					{{/each}}
+					{{else}}
+					<td class="text-center panel-title tdHeaders">No saved articles here</td>
+					{{/if}}
+				</tbody>
+			</table>
+
+			  </div>
+			</div>
+			</div>
+
 		</div>
 	</div>
+	<a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" title="Click to return on the top page" data-toggle="tooltip" data-placement="right"><span class="glyphicon glyphicon-chevron-up"></span></a>
+
 </div>

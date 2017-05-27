@@ -6,6 +6,7 @@ const request = require('request');
 
 //models
 const Article = require('../models/scrape.js');
+const Comment = require('../models/comment.js')
 
 // Mongoose mpromise deprecated - using bluebird promises
 var Promise = require('bluebird');
@@ -14,8 +15,8 @@ mongoose.Promise = Promise;
 const Schema = mongoose.Schema;
 
 // Database configuration with mongoose
-// let URI = "mongodb://localhost/scrape";
-let URI = "mongodb://heroku_2m0dspmz:i1p1v8m0u68gmn3v7s2e8ej32d@ds153501.mlab.com:53501/heroku_2m0dspmz";
+let URI = "mongodb://localhost/scrape";
+// let URI = "mongodb://heroku_2m0dspmz:i1p1v8m0u68gmn3v7s2e8ej32d@ds153501.mlab.com:53501/heroku_2m0dspmz";
 mongoose.connect(URI);
 let db = mongoose.connection;
 
@@ -58,21 +59,27 @@ const scrape = function(req, res) {
 
 	request(URL, function(error, response, html){
    		 var $ = cheerio.load(html);
-		$(".list-overflow").each(function(i, element) {
+		$(".item").each(function(i, element) {
 
 			// save an empty result object
 			var result = {};
 
-			result.headline = $(this).find("a").text();
-			// console.log(result.headline);
+			var headline = $(this).find("h2").text();
+			console.log(headline);
 
-			result.link = $(this).find("a").attr("href");
-			console.log(JSON.stringify(result.headlineLink));
+			var link = $(this).find("a").attr("href");
+			console.log(link);
 
-			result.summary = $(this).find("p.teaser").text();
+			var summary = $(this).find("p.teaser").text();
 			// console.log(result.summary);
 
-			var newArticle = new Article(result);
+			var newArticle = new Article(
+			{
+				headline: headline,
+				link: link,
+				summary: summary
+			}
+			);
 
 			newArticle.save(function(err, doc) {
 				if(err){
@@ -140,10 +147,10 @@ const remove = function(req, res){
 const comment = function(req, res){
 
   var ID= req.params.id;
-  var YourComment= req.body.comment;
+  var NewNote= req.body.comment;
 
   var newComment = new Comment({
-    comment: YourComment
+    comment: NewNote
   });
 
   Article.findOneAndUpdate({_id: ID}, { $push: { "comments": newComment } }, function(error, documentUpdated) {

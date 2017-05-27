@@ -34,7 +34,7 @@
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <ul class="nav navbar-nav">
-	        <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
+	        <li><a href="/">Home <span class="sr-only">(current)</span></a></li>
 	        <li><a href="/saved">Saved Articles</a></li>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
@@ -46,6 +46,29 @@
 	
 		
 			{{{body}}}
+			
+	<script type="text/javascript">
+		$(document).ready(function(){
+	     $(window).scroll(function () {
+	            if ($(this).scrollTop() > 50) {
+	                $('#back-to-top').fadeIn();
+	            } else {
+	                $('#back-to-top').fadeOut();
+	            }
+	        });
+	        // scroll body to 0px on click
+	        $('#back-to-top').click(function () {
+	            $('#back-to-top').tooltip('hide');
+	            $('body,html').animate({
+	                scrollTop: 0
+	            }, 800);
+	            return false;
+	        });
+	        
+	        $('#back-to-top').tooltip('show');
+
+		});
+	</script>
 
 	</div>
 		
