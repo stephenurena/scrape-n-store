@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let ArticleSchema = new Schema({
+const ArticleSchema = new Schema({
 	headline:{
 		type: String,
 		required: true,

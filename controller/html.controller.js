@@ -4,15 +4,17 @@ const cheerio = require('cheerio');
 const mongoose = require('mongoose');
 const request = require('request');
 
-//modals
+//models
 let Article = require('../models/scrape.js');
 
 // Mongoose mpromise deprecated - using bluebird promises
 let Promise = require('bluebird');
+mongoose.Promise = Promise;
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/scrapenstore");
-var db = mongoose.connection;
+let URI = "mongodb://localhost/scrapenstore"
+mongoose.connect(URI);
+let db = mongoose.connection;
 
 // Show any mongoose errors
 db.on("error", function(error) {
@@ -24,9 +26,24 @@ db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
 
-//renders homepage
+//controllers for routes in routes/html.js
 const index = function(req, res) {
 	res.render('index');
+}
+
+const saved = function(req, res) {
+	console.log("connected to saved");
+	Article.find({saved: true}, function(error, found) {
+		if(error){
+			res.render('error');
+		}
+		else{
+			var hbsObject = {
+				articles: found
+			}
+			res.render("saved", hbsObject);
+		}
+	})
 }
 
 //responds with scraped articles
@@ -36,7 +53,7 @@ const scrape = function(req, res) {
 
 	request(URL, function(error, response, html){
 		const $ = cheerio.load(html);
-		$(".list-overflow").each(function(i, element) {
+		$(".item has-image").each(function(i, element) {
 			
 			var headline = $(this).find("a").text();
 			// console.log(headline);
@@ -55,6 +72,9 @@ const scrape = function(req, res) {
 				if(error){
 					console.log("Error " + error);
 				}
+				else{
+					console.log(doc);
+				}
 			});
 
 		});
@@ -66,23 +86,79 @@ const results = function(req, res) {
 	console.log("connected to results");
 	var ID = req.params.id;
 
-	  Article.find({saved: false},function(error, found) {
+	  Article.find({saved: false},function(err, results) {
 	    // Throw any errors to the console
-	    if (error) {
+	    if (err) {
 	      return res.render('error');
 	    }
 	    // If there are no errors, send the data to the browser as a json
 	    else {
 	      var hbsObject={
-	        articles: found
+	        articles: results
 	        }
-	      res.render("index", hbsObject);
+	      res.render("results", hbsObject);
 	    }
 	  });
 };
 
+const ids = function(req, res){
+	console.log("connected to ids");
+
+  var ID= req.params.id;
+
+  Article.update({_id: ID},{ $set:{saved: true} }, function(error, updated){
+      if (error) {
+      res.render('error');
+    }
+    else{
+      res.redirect('/results');
+    }
+  });
+};
+
+const remove = function(req, res){
+
+  var ID= req.params.id;
+
+  Article.update({_id: ID},{ $set:{saved: false} }, function(error, updated){
+      if (error) {
+      res.render('error');
+    }
+    else{
+      res.redirect('/saved');
+    }
+  })
+
+};
+
+const comment = function(req, res){
+
+  var ID= req.params.id;
+  var YourComment= req.body.comment;
+
+  var newComment = new Comment({
+    comment: YourComment
+  });
+
+  Article.findOneAndUpdate({_id: ID}, { $push: { "comments": newComment } }, function(error, documentUpdated) {
+      if (error) {
+      res.render('error');
+    }
+    else{
+      res.redirect('/saved');
+    }
+  });
+
+}
+
+
+
 module.exports = {
 	index,
 	scrape,
-	results
+	saved,
+	results,
+	ids,
+	remove,
+	comment
 };

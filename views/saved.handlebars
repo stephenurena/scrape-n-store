@@ -1,0 +1,34 @@
+<div class="jumbotron">
+	<h2>Scrape-N-Store</h2>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<div id="scrapedHeader" class="panel-heading header">
+			<h3 class="panel-title">Scraped Articles</h3>
+		</div>
+		<div class="panel-body border" id="scrapedArticles">
+			<!-- list of articles goes here -->
+		<div class="container">
+
+		<tbody class="table">
+		{{#if articles}}
+			{{#each articles}}
+
+			<tr>
+				<td class="panel-title tdHeaders"><a href="{{this.link}}" target="_blank">{{this.headline}}</a></td>
+				<td class="panel-body border">{{this.summary}}</td>
+				<td>
+					<form action="/id/{{this._id}}?_method=PUT" method="POST"></form>
+					<button type="submit" class="btn btn-default"></button>
+				</td>
+			</tr>
+			{{/each}}
+			{{else}}
+			<td class="text-center panel-title tdHeaders">No articles here</td>
+			{{/if}}
+		</tbody>
+		</div>
+		</div>
+	</div>
+</div>
