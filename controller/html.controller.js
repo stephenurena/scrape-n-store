@@ -15,8 +15,8 @@ mongoose.Promise = Promise;
 const Schema = mongoose.Schema;
 
 // Database configuration with mongoose
-let URI = "mongodb://localhost/scrape";
-// let URI = "mongodb://heroku_2m0dspmz:i1p1v8m0u68gmn3v7s2e8ej32d@ds153501.mlab.com:53501/heroku_2m0dspmz";
+// let URI = "mongodb://localhost/scrape";
+let URI = "mongodb://heroku_2m0dspmz:i1p1v8m0u68gmn3v7s2e8ej32d@ds153501.mlab.com:53501/heroku_2m0dspmz";
 mongoose.connect(URI);
 let db = mongoose.connection;
 
