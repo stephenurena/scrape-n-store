@@ -1,6 +1,7 @@
 // dependencies
 const express = require('express');
 let router = express.Router();
+var mongoose = require("mongoose");
 let controller = require('../controller/html.controller');
 
 //endpoints

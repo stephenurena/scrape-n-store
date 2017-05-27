@@ -5,14 +5,16 @@ const mongoose = require('mongoose');
 const request = require('request');
 
 //models
-let Article = require('../models/scrape.js');
+const Article = require('../models/scrape.js');
 
 // Mongoose mpromise deprecated - using bluebird promises
-let Promise = require('bluebird');
+var Promise = require('bluebird');
 mongoose.Promise = Promise;
 
+const Schema = mongoose.Schema;
+
 // Database configuration with mongoose
-let URI = "mongodb://localhost/scrapenstore"
+let URI = "mongodb://localhost/scrape";
 mongoose.connect(URI);
 let db = mongoose.connection;
 
@@ -26,13 +28,15 @@ db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
 
-//controllers for routes in routes/html.js
+//controllers
+//===========
+// for routes in routes/html.js
 const index = function(req, res) {
 	res.render('index');
 }
 
 const saved = function(req, res) {
-	console.log("connected to saved");
+	// console.log("connected to saved");
 	Article.find({saved: true}, function(error, found) {
 		if(error){
 			res.render('error');
@@ -48,32 +52,33 @@ const saved = function(req, res) {
 
 //responds with scraped articles
 const scrape = function(req, res) {
-	console.log("connected to scrape");
+	// console.log("connected to scrape");
 	let URL = "http://www.npr.org/sections/alltechconsidered/195149875/innovation";
 
 	request(URL, function(error, response, html){
-		const $ = cheerio.load(html);
-		$(".item has-image").each(function(i, element) {
-			
-			var headline = $(this).find("a").text();
-			// console.log(headline);
+   		 var $ = cheerio.load(html);
+		$(".list-overflow").each(function(i, element) {
 
-			var headlineLink = $(this).find("a").attr("href");
+			// save an empty result object
+			var result = {};
 
-			var summary = $(this).find("p.teaser").text();
-			console.log(summary);
+			result.headline = $(this).find("a").text();
+			// console.log(result.headline);
 
-			var newArticle = new Article({
-				headline: headline,
-				link: headlineLink,
-				summary: summary
-			});
-			newArticle.save(function(error, saved) {
-				if(error){
-					console.log("Error " + error);
+			result.link = $(this).find("a").attr("href");
+			console.log(JSON.stringify(result.headlineLink));
+
+			result.summary = $(this).find("p.teaser").text();
+			// console.log(result.summary);
+
+			var newArticle = new Article(result);
+
+			newArticle.save(function(err, doc) {
+				if(err){
+					console.log("Error " + err);
 				}
 				else{
-					console.log(doc);
+					console.log(doc)
 				}
 			});
 
@@ -83,7 +88,7 @@ const scrape = function(req, res) {
 };
 
 const results = function(req, res) {
-	console.log("connected to results");
+	// console.log("connected to results");
 	var ID = req.params.id;
 
 	  Article.find({saved: false},function(err, results) {
